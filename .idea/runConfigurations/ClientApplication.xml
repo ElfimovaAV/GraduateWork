@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ClientApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="client" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ru.gb.ClientApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
