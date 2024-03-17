@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.gb.backend.models.Game;
 import ru.gb.backend.models.ScheduleForAWeek;
 import ru.gb.backend.models.User;
-import ru.gb.backend.repository.ScheduleForAWeekRepository;
 import ru.gb.backend.service.ScheduleForAWeekService;
-import ru.gb.backend.service.UserService;
+import ru.gb.backend.service.impl.UserServiceImpl;
 
 import java.util.*;
 
@@ -17,7 +16,7 @@ import java.util.*;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final ScheduleForAWeekService scheduleForAWeekService;
     /**
      * Перехват команды на получения списка всех пользователей

@@ -81,7 +81,7 @@ INSERT INTO `game_rules` VALUES
 CREATE TABLE `users` (
                               `id` BIGINT NOT NULL AUTO_INCREMENT,
                               `login` varchar(40) NOT NULL,
-                              `email` varchar(50) NOT NULL,
+                              `email` varchar(100) NOT NULL,
                               `child_sex` varchar(40) NOT NULL,
                               `child_age` INT NOT NULL,
                               PRIMARY KEY (`id`)

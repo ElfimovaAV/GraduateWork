@@ -2,9 +2,7 @@ package ru.gb.backend.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
 
 @Data
 @Entity
