@@ -40,11 +40,11 @@ public class ScheduleForAWeekService {
 
     /**
      * Метод для получения расписания по дням недели по email пользователя
-     * @param email
+     * @param id
      * @return расписание по дням недели с заданным email пользователя или null
      */
-    public List<ScheduleForAWeek> getScheduleForAWeekByEmail(String email) {
-        return scheduleForAWeekRepository.findScheduleForAWeekByUserEmail(email);
+    public List<ScheduleForAWeek> getScheduleForAWeekByUserId(Long id) {
+        return scheduleForAWeekRepository.findScheduleForAWeekByUserId(id);
     }
 
     /**
@@ -58,7 +58,7 @@ public class ScheduleForAWeekService {
             ScheduleForAWeek scheduleForAWeekById = optionalScheduleForAWeek.get();
             scheduleForAWeekById.setDayOfWeek(scheduleForAWeek.getDayOfWeek());
             scheduleForAWeekById.setGameId(scheduleForAWeek.getGameId());
-            scheduleForAWeekById.setUserEmail(scheduleForAWeek.getUserEmail());
+            scheduleForAWeekById.setUserId(scheduleForAWeek.getUserId());
             return scheduleForAWeekRepository.save(scheduleForAWeekById);
         }  else {
             throw new IllegalArgumentException("ScheduleForAWeek not found with id: " + id);

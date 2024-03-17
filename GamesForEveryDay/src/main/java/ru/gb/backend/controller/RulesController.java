@@ -4,33 +4,33 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gb.backend.models.GameRules;
-import ru.gb.backend.service.GameRulesService;
+import ru.gb.backend.models.Rules;
+import ru.gb.backend.service.RuleService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/game_rules")
+@RequestMapping("/rules")
 @RequiredArgsConstructor
-public class GameRulesController {
-    private final GameRulesService gameRulesService;
+public class RulesController {
+    private final RuleService rulesService;
     /**
      * Перехват команды на получения списка всех правил игры
      * @return список правил игры и код ответа 200
      */
     @GetMapping
-    public ResponseEntity<List<GameRules>> getAll() {
-        return new ResponseEntity<>(gameRulesService.getAllGameRules(), HttpStatus.OK);
+    public ResponseEntity<List<Rules>> getAll() {
+        return new ResponseEntity<>(rulesService.getAllRules(), HttpStatus.OK);
     }
 
     /**
      * Перехват команды на создание правил игры
-     * @param gameRules
+     * @param rules
      * @return созданные правила игры и код ответа 201
      */
     @PostMapping
-    public ResponseEntity<GameRules> createGameRules(@RequestBody GameRules gameRules) {
-        return new ResponseEntity<>(gameRulesService.createGameRules(gameRules), HttpStatus.CREATED);
+    public ResponseEntity<Rules> createRules(@RequestBody Rules rules) {
+        return new ResponseEntity<>(rulesService.createRules(rules), HttpStatus.CREATED);
     }
 
     /**
@@ -39,25 +39,25 @@ public class GameRulesController {
      * @return правила игры с заданным id и код ответа 200 либо код ответа 400 и новую пустые правила игры, если нет правил игры с заданным id
      */
     @GetMapping("/{id}")
-    public ResponseEntity<GameRules> getGameRules(@PathVariable("id") Long id) {
-        GameRules gameRulesById;
+    public ResponseEntity<Rules> getRules(@PathVariable("id") Long id) {
+        Rules rulesById;
         try {
-            gameRulesById = gameRulesService.getGameRulesById(id);
+            rulesById = rulesService.getRulesById(id);
         } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GameRules());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Rules());
         }
-        return new ResponseEntity<>(gameRulesById, HttpStatus.OK);
+        return new ResponseEntity<>(rulesById, HttpStatus.OK);
     }
 
     /**
      * Перехват команды на обновление правил игры с поиском нужной по id
      * @param id
-     * @param gameRules
+     * @param rules
      * @return отредактированные правила игры и код ответа 200
      */
     @PutMapping("/{id}")
-    public ResponseEntity<GameRules> updateGameRules(@PathVariable("id") Long id, @RequestBody GameRules gameRules) {
-        return new ResponseEntity<>(gameRulesService.updateGameRules(id, gameRules), HttpStatus.OK);
+    public ResponseEntity<Rules> updateRules(@PathVariable("id") Long id, @RequestBody Rules rules) {
+        return new ResponseEntity<>(rulesService.updateRules(id, rules), HttpStatus.OK);
     }
 
     /**
@@ -67,7 +67,7 @@ public class GameRulesController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGameRules(@PathVariable("id") Long id){
-        gameRulesService.deleteGameRules(id);
+        rulesService.deleteRules(id);
         return ResponseEntity.ok().build();
     }
 }

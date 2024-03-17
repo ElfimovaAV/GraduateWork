@@ -99,11 +99,10 @@ public class UserController {
      * @return недельное расписание пользователя с заданным id и код ответа 200 либо код ответа 400 и новое пустое расписание пользователя
      */
     @GetMapping("/schedule_for_a_week/{id}")
-    public ResponseEntity<List<ScheduleForAWeek>> getScheduleForAWeekByUser(@PathVariable("id") Long id) {
-        String email = Objects.requireNonNull(getUser(id).getBody()).getEmail();
-        List<ScheduleForAWeek> scheduleForAWeekByEmail;
+    public ResponseEntity<List<ScheduleForAWeek>> getScheduleForAWeekByUserId(@PathVariable("id") Long id) {
+        List<ScheduleForAWeek> scheduleForAWeekByUserId;
         try {
-            scheduleForAWeekByEmail = scheduleForAWeekService.getScheduleForAWeekByEmail(email);
+            scheduleForAWeekByUserId = scheduleForAWeekService.getScheduleForAWeekByUserId(id);
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new List<ScheduleForAWeek>() {
                 @Override
@@ -222,7 +221,7 @@ public class UserController {
                 }
             });
         }
-        return new ResponseEntity<>(scheduleForAWeekByEmail, HttpStatus.OK);
+        return new ResponseEntity<>(scheduleForAWeekByUserId, HttpStatus.OK);
     }
 
 }

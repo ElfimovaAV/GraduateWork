@@ -3,6 +3,8 @@ package ru.gb.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 @Entity
@@ -22,5 +24,8 @@ public class Game {
     private int ageFrom;
     @Column(name = "age_to")
     private int ageTo;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "rules_id", referencedColumnName = "id")
+    private Rules rules;
 
 }

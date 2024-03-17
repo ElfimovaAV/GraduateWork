@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ScheduleForAWeekRepository extends JpaRepository<ScheduleForAWeek, Long> {
-    List<ScheduleForAWeek> findScheduleForAWeekByUserEmail(String email);
+    List<ScheduleForAWeek> findScheduleForAWeekByUserId(Long id);
 }

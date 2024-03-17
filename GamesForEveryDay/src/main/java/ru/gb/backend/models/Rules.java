@@ -4,16 +4,16 @@ package ru.gb.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
-@Table(name = "game_rules")
-public class GameRules {
+@Table(name = "rules")
+public class Rules {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String rule;
-    @Column(name = "game_id")
-    private Long gameId;
+    private String rules;
 
 }

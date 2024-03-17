@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
      * @return сохраненного пользователя
      */
     public User createUser(User user) {
+        log.info("IN createUser - user: {} created", user);
         return userRepository.save(user);
     }
 
@@ -87,6 +88,7 @@ public class UserServiceImpl implements UserService {
             userById.setRole(user.getRole());
             userById.setChildSex(user.getChildSex());
             userById.setChildAge(user.getChildAge());
+            log.info("IN updateUser - user: {} with id: {} updated", user, id);
             return userRepository.save(userById);
         } else {
             throw new IllegalArgumentException("User not found with id: " + id);
@@ -125,6 +127,7 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
+        log.info("IN getGamesByChildSex - user with id: {} got suitable games by child sex", id);
         return suitableGames;
     }
 
@@ -146,6 +149,7 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
+        log.info("IN getGamesByChildAge - user with id: {} got suitable games by child age", id);
         return intersection(suitableGamesFrom, suitableGamesTo);
     }
 
@@ -174,6 +178,7 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
+        log.info("IN getGamesByChildSexAndAge - user with id: {} got suitable games by child sex and age", id);
         return intersection(intersection(suitableGamesFrom, suitableGamesTo), suitableGames);
     }
 
@@ -190,46 +195,19 @@ public class UserServiceImpl implements UserService {
     public List<ScheduleForAWeek> createScheduleForAWeek(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
-            User userById = optionalUser.get();
             List<Game> suitableGames = getGamesByChildSexAndAge(id);
-            ScheduleForAWeek scheduleForAMonday = new ScheduleForAWeek();
-            scheduleForAMonday.setDayOfWeek(DayOfWeek.MONDAY);
-            scheduleForAMonday.setUserEmail(userById.getEmail());
-            scheduleForAMonday.setGameId(suitableGames.get(0).getId());
-            scheduleForAWeekRepository.save(scheduleForAMonday);
-            ScheduleForAWeek scheduleForTuesday = new ScheduleForAWeek();
-            scheduleForTuesday.setDayOfWeek(DayOfWeek.TUESDAY);
-            scheduleForTuesday.setUserEmail(userById.getEmail());
-            scheduleForTuesday.setGameId(suitableGames.get(1).getId());
-            scheduleForAWeekRepository.save(scheduleForTuesday);
-            ScheduleForAWeek scheduleForWednesday = new ScheduleForAWeek();
-            scheduleForWednesday.setDayOfWeek(DayOfWeek.WEDNESDAY);
-            scheduleForWednesday.setUserEmail(userById.getEmail());
-            scheduleForWednesday.setGameId(suitableGames.get(2).getId());
-            scheduleForAWeekRepository.save(scheduleForWednesday);
-            ScheduleForAWeek scheduleForThursday = new ScheduleForAWeek();
-            scheduleForThursday.setDayOfWeek(DayOfWeek.THURSDAY);
-            scheduleForThursday.setUserEmail(userById.getEmail());
-            scheduleForThursday.setGameId(suitableGames.get(3).getId());
-            scheduleForAWeekRepository.save(scheduleForThursday);
-            ScheduleForAWeek scheduleForFriday = new ScheduleForAWeek();
-            scheduleForFriday.setDayOfWeek(DayOfWeek.FRIDAY);
-            scheduleForFriday.setUserEmail(userById.getEmail());
-            scheduleForFriday.setGameId(suitableGames.get(4).getId());
-            scheduleForAWeekRepository.save(scheduleForFriday);
-            ScheduleForAWeek scheduleForSaturday = new ScheduleForAWeek();
-            scheduleForSaturday.setDayOfWeek(DayOfWeek.SATURDAY);
-            scheduleForSaturday.setUserEmail(userById.getEmail());
-            scheduleForSaturday.setGameId(suitableGames.get(5).getId());
-            scheduleForAWeekRepository.save(scheduleForSaturday);
-            ScheduleForAWeek scheduleForSunday = new ScheduleForAWeek();
-            scheduleForSunday.setDayOfWeek(DayOfWeek.SUNDAY);
-            scheduleForSunday.setUserEmail(userById.getEmail());
-            scheduleForSunday.setGameId(suitableGames.get(6).getId());
-            scheduleForAWeekRepository.save(scheduleForSunday);
+            for (int i = 0; i < DayOfWeek.daysGetLength(); i++) {
+                ScheduleForAWeek scheduleForAWeek = new ScheduleForAWeek();
+                scheduleForAWeek.setDayOfWeek(DayOfWeek.getDayOfWeek(i));
+                scheduleForAWeek.setGameId(suitableGames.get(i).getId());
+                scheduleForAWeek.setUserId(id);
+                scheduleForAWeekRepository.save(scheduleForAWeek);
+            }
         } else {
             throw new IllegalArgumentException("User not found with id: " + id);
-        } return scheduleForAWeekRepository.findAll();
+        }
+        log.info("IN createScheduleForAWeek - user with id: {} got schedule of suitable game for a week", id);
+        return scheduleForAWeekRepository.findScheduleForAWeekByUserId(id);
     }
 
 }

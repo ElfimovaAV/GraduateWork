@@ -11,11 +11,11 @@ public class ScheduleForAWeek {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "day_of_week")
+    @Column(name = "day_of_week", nullable = false)
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
-    @Column(name = "game_id")
+    @Column(name = "game_id", nullable = false)
     private Long gameId;
-    @Column(name = "user_email")
-    private String userEmail;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 }
