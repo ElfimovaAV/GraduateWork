@@ -1,5 +1,6 @@
 package ru.gb.backend.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,101 +9,66 @@ import ru.gb.backend.models.Game;
 import ru.gb.backend.models.ScheduleForAWeek;
 import ru.gb.backend.models.User;
 import ru.gb.backend.service.ScheduleForAWeekService;
+import ru.gb.backend.service.impl.JwtServiceImpl;
 import ru.gb.backend.service.impl.UserServiceImpl;
 
 import java.util.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserServiceImpl userService;
     private final ScheduleForAWeekService scheduleForAWeekService;
-    /**
-     * Перехват команды на получения списка всех пользователей
-     * @return список пользователей и код ответа 200
-     */
-    @GetMapping
-    public ResponseEntity<List<User>> getAll() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-    }
+    private final JwtServiceImpl jwtService;
 
-    /**
-     * Перехват команды на создание пользователя
-     * @param user
-     * @return созданного пользователя и код ответа 201
-     */
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    public User getUserByToken(HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        String jwt = authHeader.substring(7);
+        String username = jwtService.extractUsername(jwt);
+        return userService.findByUsername(username);
     }
-    /**
-     * Перехват команды на вывод пользователя по id
-     * @param id
-     * @return пользователя с заданным id и код ответа 200 либо код ответа 400 и нового пустого пользователя, если нет пользователя с заданным id
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
-        User userById;
-        try {
-            userById = userService.getUserById(id);
-        } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
-        }
-        return new ResponseEntity<>(userById, HttpStatus.OK);
-    }
-
     /**
      * Перехват команды на обновление пользователя с поиском нужного по id
-     * @param id
+     * @param request
      * @param user
      * @return отредактированного пользователя и код ответа 200
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-        return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
-    }
-
-    /**
-     * Перехват команды на удаление пользователя по его id
-     * @param id
-     * @return код ответа 200
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id){
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+    @PutMapping("/update")
+    public ResponseEntity<User> updateUser(HttpServletRequest request, @RequestBody User user) {
+        return new ResponseEntity<>(userService.updateUser(getUserByToken(request).getId(), user), HttpStatus.OK);
     }
 
     @GetMapping("/search_by_child_sex")
-    public ResponseEntity<List<Game>> getGamesByChildSex(@RequestParam Long id) {
-        return new ResponseEntity<>(userService.getGamesByChildSex(id), HttpStatus.OK);
+    public ResponseEntity<List<Game>> getGamesByChildSex(HttpServletRequest request) {
+        return new ResponseEntity<>(userService.getGamesByChildSex(getUserByToken(request).getId()), HttpStatus.OK);
     }
 
     @GetMapping("/search_by_child_age")
-    public ResponseEntity<List<Game>> getGamesByChildAge(@RequestParam Long id) {
-        return new ResponseEntity<>(userService.getGamesByChildAge(id), HttpStatus.OK);
+    public ResponseEntity<List<Game>> getGamesByChildAge(HttpServletRequest request) {
+        return new ResponseEntity<>(userService.getGamesByChildAge(getUserByToken(request).getId()), HttpStatus.OK);
     }
 
     @GetMapping("/search_by_child_sex_and_age")
-    public ResponseEntity<List<Game>> getGamesByChildSexAndAge(@RequestParam Long id) {
-        return new ResponseEntity<>(userService.getGamesByChildSexAndAge(id), HttpStatus.OK);
+    public ResponseEntity<List<Game>> getGamesByChildSexAndAge(HttpServletRequest request) {
+        return new ResponseEntity<>(userService.getGamesByChildSexAndAge(getUserByToken(request).getId()), HttpStatus.OK);
     }
     @PostMapping("/schedule_for_a_week")
-    public ResponseEntity<List<ScheduleForAWeek>> createScheduleForAWeek(@RequestParam Long id){
-        return new ResponseEntity<>(userService.createScheduleForAWeek(id), HttpStatus.CREATED);
+    public ResponseEntity<List<ScheduleForAWeek>> createScheduleForAWeek(HttpServletRequest request){
+        return new ResponseEntity<>(userService.createScheduleForAWeek(getUserByToken(request).getId()), HttpStatus.CREATED);
     }
 
     /**
      * Перехват команды на вывод недельного расписания пользователя по id
-     * @param id
+     * @param request
      * @return недельное расписание пользователя с заданным id и код ответа 200 либо код ответа 400 и новое пустое расписание пользователя
      */
-    @GetMapping("/schedule_for_a_week/{id}")
-    public ResponseEntity<List<ScheduleForAWeek>> getScheduleForAWeekByUserId(@PathVariable("id") Long id) {
+    @GetMapping("/schedule_for_a_week/get")
+    public ResponseEntity<List<ScheduleForAWeek>> getScheduleForAWeekByUserId(HttpServletRequest request) {
+        User user = getUserByToken(request);
         List<ScheduleForAWeek> scheduleForAWeekByUserId;
         try {
-            scheduleForAWeekByUserId = scheduleForAWeekService.getScheduleForAWeekByUserId(id);
+            scheduleForAWeekByUserId = scheduleForAWeekService.getScheduleForAWeekByUserId(user.getId());
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new List<ScheduleForAWeek>() {
                 @Override

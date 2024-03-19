@@ -17,6 +17,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String ADMIN_ENDPOINT = "/api/admin/**";
+    private static final String USER_ENDPOINT = "/api/users/**";
+    private static final String LOGIN_ENDPOINT = "/api/auth/**";
     @Autowired
     private JWTAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
@@ -26,7 +29,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(configurer -> configurer
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(LOGIN_ENDPOINT, USER_ENDPOINT).permitAll()
+                        .requestMatchers(ADMIN_ENDPOINT).hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(STATELESS)).

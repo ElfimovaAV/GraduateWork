@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
 
-
     /**
      * Метод для получения списка всех пользователей
      *
@@ -64,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) {
         User result = userRepository.findById(id).orElse(null);
-        if(result == null){
+        if (result == null) {
             log.warn("IN getUserById - no user found by id: {}", id);
             return null;
         }

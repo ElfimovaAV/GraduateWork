@@ -20,7 +20,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="role" type="VARCHAR(5)" defaultValue="USER">
+            <column name="role" type="VARCHAR(5)">
                 <constraints nullable="false"/>
             </column>
 
@@ -322,7 +322,4 @@
             </column>
         </createTable>
     </changeSet>
-
-
-
 </databaseChangeLog>
