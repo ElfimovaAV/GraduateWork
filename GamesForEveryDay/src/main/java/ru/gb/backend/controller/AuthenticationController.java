@@ -18,13 +18,24 @@ import ru.gb.backend.service.AuthenticationService;
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
+
+    /**
+     * Перехват команды на регистрацию нового пользователя
+     * @param request
+     * @return token и код ответа 200
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register (@RequestBody RegisterRequest request){
         return ResponseEntity.ok(authenticationService.register(request));
     }
+
+    /**
+     * Перехват команды на аутентификацию зарегистрированного пользователя
+     * @param request
+     * @return token и код ответа 200
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody AuthenticationRequest request){
-        System.out.println("hello");
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }

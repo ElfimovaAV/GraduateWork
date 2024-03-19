@@ -5,10 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.backend.models.Game;
-import ru.gb.backend.models.Rules;
 import ru.gb.backend.models.User;
 import ru.gb.backend.service.GameService;
-import ru.gb.backend.service.RuleService;
+import ru.gb.backend.service.ScheduleForAWeekService;
 import ru.gb.backend.service.impl.UserServiceImpl;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
     private final GameService gameService;
-    private final RuleService rulesService;
     private final UserServiceImpl userService;
     /**
      * Перехват команды на получения списка всех игр
@@ -61,7 +59,7 @@ public class AdminController {
      * @param game
      * @return отредактированную игру и код ответа 200
      */
-    @PutMapping("/games/{id}")
+    @PutMapping("/games/update/{id}")
     public ResponseEntity<Game> updateGame(@PathVariable("id") Long id, @RequestBody Game game) {
         return new ResponseEntity<>(gameService.updateGame(id, game), HttpStatus.OK);
     }
@@ -76,62 +74,7 @@ public class AdminController {
         gameService.deleteGame(id);
         return ResponseEntity.ok().build();
     }
-    /**
-     * Перехват команды на получения списка всех правил игры
-     * @return список правил игры и код ответа 200
-     */
-    @GetMapping("/rules")
-    public ResponseEntity<List<Rules>> getAllRules() {
-        return new ResponseEntity<>(rulesService.getAllRules(), HttpStatus.OK);
-    }
 
-    /**
-     * Перехват команды на создание правил игры
-     * @param rules
-     * @return созданные правила игры и код ответа 201
-     */
-    @PostMapping("/rules")
-    public ResponseEntity<Rules> createRules(@RequestBody Rules rules) {
-        return new ResponseEntity<>(rulesService.createRules(rules), HttpStatus.CREATED);
-    }
-
-    /**
-     * Перехват команды на вывод правил игры по id
-     * @param id
-     * @return правила игры с заданным id и код ответа 200 либо код ответа 400 и новую пустые правила игры, если нет правил игры с заданным id
-     */
-    @GetMapping("/rules/{id}")
-    public ResponseEntity<Rules> getRules(@PathVariable("id") Long id) {
-        Rules rulesById;
-        try {
-            rulesById = rulesService.getRulesById(id);
-        } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Rules());
-        }
-        return new ResponseEntity<>(rulesById, HttpStatus.OK);
-    }
-
-    /**
-     * Перехват команды на обновление правил игры с поиском нужной по id
-     * @param id
-     * @param rules
-     * @return отредактированные правила игры и код ответа 200
-     */
-    @PutMapping("/rules/{id}")
-    public ResponseEntity<Rules> updateRules(@PathVariable("id") Long id, @RequestBody Rules rules) {
-        return new ResponseEntity<>(rulesService.updateRules(id, rules), HttpStatus.OK);
-    }
-
-    /**
-     * Перехват команды на удаление правил игры по их id
-     * @param id
-     * @return код ответа 200
-     */
-    @DeleteMapping("/rules/{id}")
-    public ResponseEntity<Void> deleteGameRules(@PathVariable("id") Long id){
-        rulesService.deleteRules(id);
-        return ResponseEntity.ok().build();
-    }
     /**
      * Перехват команды на получения списка всех пользователей
      * @return список пользователей и код ответа 200
@@ -172,7 +115,7 @@ public class AdminController {
      * @param user
      * @return отредактированного пользователя и код ответа 200
      */
-    @PutMapping("/users/{id}")
+    @PutMapping("/users/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
     }
@@ -187,4 +130,5 @@ public class AdminController {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
+
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.gb.backend.exceptions.MyIllegalArgumentException;
 import ru.gb.backend.models.*;
 import ru.gb.backend.repository.GameRepository;
 import ru.gb.backend.repository.ScheduleForAWeekRepository;
@@ -36,10 +37,17 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    /**
+     * Метод для нахождения пользователя по username
+     *
+     * @param username
+     * @return пользователя с переданным username
+     */
+
     @Override
     public User findByUsername(String username) {
         User result = userRepository.findByUsername(username).orElse(null);
-        log.info("IN findByLogin - user: {} found by login: {}", result, username);
+        log.info("IN findByUsername - user: {} found by username: {}", result, username);
         return result;
     }
 
@@ -67,7 +75,7 @@ public class UserServiceImpl implements UserService {
             log.warn("IN getUserById - no user found by id: {}", id);
             return null;
         }
-        log.info("IN findByLogin - user: {} found by id: {}", result, id);
+        log.info("IN findByUserId - user: {} found by id: {}", result, id);
         return result;
     }
 
@@ -95,15 +103,20 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Метод для удаления пользователя
+     * Метод для удаления пользователя по id
      *
      * @param id
      */
     @Override
     public void deleteUser(Long id) {
-        User userById = getUserById(id);
-        userRepository.delete(userById);
-        log.info("IN deleteUser - user with id: {} successfully deleted", id);
+        try {
+            User userById = getUserById(id);
+            userRepository.delete(userById);
+            log.info("IN deleteUser - user with id: {} successfully deleted", id);
+        } catch (IllegalArgumentException e) {
+            throw new MyIllegalArgumentException(e.getMessage());
+        }
+
     }
 
     /**
@@ -153,7 +166,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Метод для подбора списка игр по полу ивозрасту ребенка пользователя
+     * Метод для подбора списка игр по полу и возрасту ребенка пользователя
      *
      * @param id
      * @return список игр, подходящих по полу и возрасту ребенку пользователя
@@ -181,6 +194,13 @@ public class UserServiceImpl implements UserService {
         return intersection(intersection(suitableGamesFrom, suitableGamesTo), suitableGames);
     }
 
+    /**
+     * Вспомогательный метод для получения списка игр по пересечению двух списков
+     * @param list1
+     * @param list2
+     * @return список game
+     */
+
     public List<Game> intersection(List<Game> list1, List<Game> list2) {
         List<Game> list = new ArrayList<>();
         for (Game game : list1) {
@@ -191,6 +211,11 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
+    /**
+     * Метод для составления недельного расписания на основе подходящих по полу и возрасту ребенка пользователя игр
+     * @param id
+     * @return недельное расписание
+     */
     public List<ScheduleForAWeek> createScheduleForAWeek(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -207,6 +232,22 @@ public class UserServiceImpl implements UserService {
         }
         log.info("IN createScheduleForAWeek - user with id: {} got schedule of suitable game for a week", id);
         return scheduleForAWeekRepository.findScheduleForAWeekByUserId(id);
+    }
+
+    /**
+     * Метод для получения игры из недельного расписания на переданный в параметрах день
+     * @param dayOfWeek
+     * @param userId
+     * @return game
+     */
+    public Optional<Game> getGameForToday(DayOfWeek dayOfWeek, Long userId) {
+        try {
+            ScheduleForAWeek scheduleForAWeeks = scheduleForAWeekRepository.findScheduleForAWeekByDayOfWeekAndUserId(dayOfWeek, userId);
+            log.info("IN getGameForToday - user with id: {} got games for dayOfWeeK: {}", userId, dayOfWeek);
+            return gameRepository.findById(scheduleForAWeeks.getGameId());
+        } catch (IllegalArgumentException e) {
+            throw new MyIllegalArgumentException(e.getMessage());
+        }
     }
 
 }

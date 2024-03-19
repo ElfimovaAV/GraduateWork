@@ -2,6 +2,7 @@ package ru.gb.backend.service;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +17,7 @@ import ru.gb.backend.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
     @Autowired
     private IJwtService jwtService;
@@ -36,6 +38,7 @@ public class AuthenticationService {
         //!!! issue here
         userRepository.save(user);
         var jwtToken =jwtService.generateToken(user);
+        log.info("IN register - user: {} registered", user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -46,6 +49,7 @@ public class AuthenticationService {
         ));
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         var jwtToken =jwtService.generateToken(user);
+        log.info("IN authenticate - user: {} authenticated", user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

@@ -3,7 +3,7 @@ package ru.gb.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Locale;
 
 
 @Data
@@ -24,8 +24,13 @@ public class Game {
     private int ageFrom;
     @Column(name = "age_to")
     private int ageTo;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "rules_id", referencedColumnName = "id")
-    private Rules rules;
+    @Column(nullable = false)
+    private String rules;
+
+    @Override
+    public String toString() {
+        return String.format(Locale.getDefault(), "title: %s",
+                title);
+    }
 
 }

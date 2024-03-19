@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.gb.backend.models.DayOfWeek;
 import ru.gb.backend.models.Game;
 import ru.gb.backend.models.ScheduleForAWeek;
 import ru.gb.backend.models.User;
@@ -22,6 +23,11 @@ public class UserController {
     private final ScheduleForAWeekService scheduleForAWeekService;
     private final JwtServiceImpl jwtService;
 
+    /**
+     * Вспомогательный метод для получения пользователя по его токену из хедера
+     * @param request
+     * @return идентифицированного пользователя
+     */
     public User getUserByToken(HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");
         String jwt = authHeader.substring(7);
@@ -39,20 +45,41 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUser(getUserByToken(request).getId(), user), HttpStatus.OK);
     }
 
+    /**
+     * Перехват команды на получение списка подходящих по полу ребенка пользователя игр
+     * @param request
+     * @return список подходящих игр и код ответа 200
+     */
     @GetMapping("/search_by_child_sex")
     public ResponseEntity<List<Game>> getGamesByChildSex(HttpServletRequest request) {
         return new ResponseEntity<>(userService.getGamesByChildSex(getUserByToken(request).getId()), HttpStatus.OK);
     }
 
+    /**
+     * Перехват команды на получение списка подходящих по возрасту ребенка пользователя игр
+     * @param request
+     * @return список подходящих игр и код ответа 200
+     */
     @GetMapping("/search_by_child_age")
     public ResponseEntity<List<Game>> getGamesByChildAge(HttpServletRequest request) {
         return new ResponseEntity<>(userService.getGamesByChildAge(getUserByToken(request).getId()), HttpStatus.OK);
     }
 
+    /**
+     * Перехват команды на получение списка подходящих по возрасту и полу ребенка пользователя игр
+     * @param request
+     * @return список подходящих игр и код ответа 200
+     */
     @GetMapping("/search_by_child_sex_and_age")
     public ResponseEntity<List<Game>> getGamesByChildSexAndAge(HttpServletRequest request) {
         return new ResponseEntity<>(userService.getGamesByChildSexAndAge(getUserByToken(request).getId()), HttpStatus.OK);
     }
+
+    /**
+     * Перезват команды на создание недельного расписания на основе подходящих по полу и возрасту ребенка пользователя игр
+     * @param request
+     * @return недельное расписание и код ответа 201
+     */
     @PostMapping("/schedule_for_a_week")
     public ResponseEntity<List<ScheduleForAWeek>> createScheduleForAWeek(HttpServletRequest request){
         return new ResponseEntity<>(userService.createScheduleForAWeek(getUserByToken(request).getId()), HttpStatus.CREATED);
@@ -188,6 +215,28 @@ public class UserController {
             });
         }
         return new ResponseEntity<>(scheduleForAWeekByUserId, HttpStatus.OK);
+    }
+
+    /**
+     * Перехват команды на получение игры на нужный день недели из недельного расписания пользователя
+     * @param request
+     * @param dayOfWeek
+     * @return game и код ответа 200
+     */
+    @GetMapping("/get_game_for_today")
+    public ResponseEntity<Game> getGameForToday(HttpServletRequest request, @RequestParam DayOfWeek dayOfWeek) {
+        return new ResponseEntity<>(userService.getGameForToday(dayOfWeek, getUserByToken(request).getId()).orElse(null), HttpStatus.OK);
+    }
+
+    /**
+     * Перехват команды на удаление игры по ее id
+     * @param request
+     * @return код ответа 200
+     */
+    @DeleteMapping("/schedule_for_a_week")
+    public ResponseEntity<Void> deleteScheduleForAWeekByUserId(HttpServletRequest request){
+        scheduleForAWeekService.deleteScheduleForAWeekByUserId(getUserByToken(request).getId());
+        return ResponseEntity.ok().build();
     }
 
 }

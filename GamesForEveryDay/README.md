@@ -15,15 +15,18 @@
         - MySQL Driver - _драйвер JDBC для MySQL_
         - Lombok - _создание get,set-методов, конструкторов и многое другое_
         - Spring Web - _создание веб-приложения, включая RESTful, с использованием Spring MVC. Использует Apache Tomcat в качестве встроенного контейнера по умолчанию_
+        - Spring Security - _Легко настраиваемая платформа аутентификации и контроля доступа для приложений Spring._
+        - Liquibase Migration - _Миграция базы данных Liquibase и библиотека управления версиями._
+    - Libraries:
+        - JSON Web Tokens - _создание данных с необязательной подписью и/или необязательным шифрованием._
+     
 
 - Содержимое [application.properties](./src/main/resources/application.properties)
 
 Поднята база данных в докер-контейнере:
 - Docker: `docker run --name games_for_every_day -p 8000:3306 -e MYSQL_ROOT_PASSWORD=12345678 -d mysql`
 
-- Стартовый SQL-скрипт [тут](./sql/query.sql)
 
 TO_DO:
-- В UserController добавить метод для получения игры с названием и правилами по дню недели (get_game_for_today)
-- Доделать коллекцию Postman 
+- В коллекции Postman реализовать тесты
 
