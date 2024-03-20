@@ -9,7 +9,7 @@
         - Description: Graduate project for Spring Boot
         - Package name: ru.gb.backend
         - Packaging: Jar
-        - Java: 20
+        - Java: 17
     - Dependencies:
         - Spring Data JPA - _сохранение данных в SQL-хранилищах с помощью Java Persistence API с использованием Spring Data и Hibernate_
         - MySQL Driver - _драйвер JDBC для MySQL_
@@ -27,6 +27,5 @@
 - Docker: `docker run --name games_for_every_day -p 8000:3306 -e MYSQL_ROOT_PASSWORD=12345678 -d mysql`
 
 
-TO_DO:
-- В коллекции Postman реализовать тесты
+Коллекция Postman [Games For Every Day.postman_collection.json](./.postman/Games%20For%20Every%20Day.postman_collection.json)
 

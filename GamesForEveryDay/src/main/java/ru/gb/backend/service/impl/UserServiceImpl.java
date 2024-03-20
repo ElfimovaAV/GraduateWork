@@ -196,6 +196,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Вспомогательный метод для получения списка игр по пересечению двух списков
+     *
      * @param list1
      * @param list2
      * @return список game
@@ -213,19 +214,28 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Метод для составления недельного расписания на основе подходящих по полу и возрасту ребенка пользователя игр
+     *
      * @param id
      * @return недельное расписание
      */
     public List<ScheduleForAWeek> createScheduleForAWeek(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
-            List<Game> suitableGames = getGamesByChildSexAndAge(id);
-            for (int i = 0; i < DayOfWeek.daysGetLength(); i++) {
-                ScheduleForAWeek scheduleForAWeek = new ScheduleForAWeek();
-                scheduleForAWeek.setDayOfWeek(DayOfWeek.getDayOfWeek(i));
-                scheduleForAWeek.setGameId(suitableGames.get(i).getId());
-                scheduleForAWeek.setUserId(id);
-                scheduleForAWeekRepository.save(scheduleForAWeek);
+            try {
+                List<ScheduleForAWeek> scheduleForAWeeks = scheduleForAWeekRepository.findScheduleForAWeekByUserId(id);
+                if (scheduleForAWeeks.isEmpty()) {
+                    List<Game> suitableGames = getGamesByChildSexAndAge(id);
+                    for (int i = 0; i < DayOfWeek.daysGetLength(); i++) {
+                        ScheduleForAWeek scheduleForAWeek = new ScheduleForAWeek();
+                        scheduleForAWeek.setDayOfWeek(DayOfWeek.getDayOfWeek(i));
+                        scheduleForAWeek.setGameId(suitableGames.get(i).getId());
+                        scheduleForAWeek.setUserId(id);
+                        scheduleForAWeekRepository.save(scheduleForAWeek);
+                        log.info("IN createScheduleForAWeek - user with id: {} got schedule: {}", id, scheduleForAWeek);
+                    }
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
             }
         } else {
             throw new IllegalArgumentException("User not found with id: " + id);
@@ -236,6 +246,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Метод для получения игры из недельного расписания на переданный в параметрах день
+     *
      * @param dayOfWeek
      * @param userId
      * @return game

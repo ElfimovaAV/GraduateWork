@@ -23,8 +23,8 @@ public class ScheduleForAWeek {
 
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(), "dayOfWeek: %s, user_id: %s",
-                dayOfWeek, userId);
+        return String.format(Locale.getDefault(), "dayOfWeek: %s, game_id: %s",
+                dayOfWeek, gameId);
     }
 
 }
