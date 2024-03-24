@@ -17,12 +17,12 @@ public class Game {
     private String title;
     @Column(nullable = false)
     private String description;
-    @Column(name = "child_sex")
+    @Column(name = "child_sex", nullable = false)
     @Enumerated(EnumType.STRING)
     private ChildSex childSex;
-    @Column(name = "age_from")
+    @Column(name = "age_from", nullable = false)
     private int ageFrom;
-    @Column(name = "age_to")
+    @Column(name = "age_to",nullable = false)
     private int ageTo;
     @Column(nullable = false)
     private String rules;
