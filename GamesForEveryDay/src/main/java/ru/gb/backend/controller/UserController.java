@@ -34,7 +34,7 @@ public class UserController {
         String authHeader = request.getHeader("Authorization");
         String jwt = authHeader.substring(7);
         String username = jwtService.extractUsername(jwt);
-        return userService.findByUsername(username);
+        return userService.getUserByUsername(username);
     }
     /**
      * Перехват команды на обновление пользователя с поиском нужного по id

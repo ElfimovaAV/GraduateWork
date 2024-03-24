@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.gb.backend.exceptions.MyIllegalArgumentException;
 import ru.gb.backend.models.User;
 import ru.gb.backend.repositories.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -22,7 +20,7 @@ public class UserService {
     /**
      * Метод для получения списка всех пользователей
      *
-     * @return все пользователи
+     * @return список всех пользователей
      */
     public List<User> getAllUsers() {
         List<User> result = userRepository.findAll();
@@ -37,9 +35,13 @@ public class UserService {
      * @return пользователя с переданным username
      */
 
-    public User findByUsername(String username) {
+    public User getUserByUsername(String username) {
         User result = userRepository.findByUsername(username).orElse(null);
-        log.info("IN findByUsername - user: {} found by username: {}", result, username);
+        if (result == null) {
+            log.warn("IN getUserByUsername - no user found by username: {}", username);
+            return null;
+        }
+        log.info("IN getUserByUsername - user: {} found by username: {}", result, username);
         return result;
     }
 
@@ -66,20 +68,22 @@ public class UserService {
             log.warn("IN getUserById - no user found by id: {}", id);
             return null;
         }
-        log.info("IN findByUserId - user: {} found by id: {}", result, id);
+        log.info("IN getUserById - user: {} found by id: {}", result, id);
         return result;
     }
 
     /**
-     * Метод для редактирования пользователя
+     * Метод для редактирования данных пользователя
      *
      * @param user
      * @return отредактированного пользователя
      */
     public User updateUser(Long id, User user) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User userById = optionalUser.get();
+        User userById = userRepository.findById(id).orElse(null);
+        if (userById == null) {
+            log.warn("IN updateUser - no user found by id: {}", id);
+            return null;
+        } else {
             userById.setUsername(user.getUsername());
             userById.setEmail(user.getEmail());
             userById.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -88,8 +92,6 @@ public class UserService {
             userById.setChildAge(user.getChildAge());
             log.info("IN updateUser - user: {} with id: {} updated", user, id);
             return userRepository.save(userById);
-        } else {
-            throw new IllegalArgumentException("User not found with id: " + id);
         }
     }
 
@@ -99,13 +101,12 @@ public class UserService {
      * @param id
      */
     public void deleteUser(Long id) {
-        try {
-            User userById = getUserById(id);
+        User userById = userRepository.findById(id).orElse(null);
+        if (userById == null) {
+            log.warn("IN deleteUser - no user found by id: {}", id);
+        } else {
             userRepository.delete(userById);
             log.info("IN deleteUser - user with id: {} successfully deleted", id);
-        } catch (IllegalArgumentException e) {
-            throw new MyIllegalArgumentException(e.getMessage());
         }
     }
-
 }
