@@ -1,4 +1,4 @@
-package ru.gb.backend.service;
+package ru.gb.backend.services;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;

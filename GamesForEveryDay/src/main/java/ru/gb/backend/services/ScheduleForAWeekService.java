@@ -1,11 +1,14 @@
-package ru.gb.backend.service;
+package ru.gb.backend.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.gb.backend.exceptions.MyIllegalArgumentException;
+import ru.gb.backend.models.DayOfWeek;
+import ru.gb.backend.models.Game;
 import ru.gb.backend.models.ScheduleForAWeek;
-import ru.gb.backend.repository.ScheduleForAWeekRepository;
+import ru.gb.backend.repositories.GameRepository;
+import ru.gb.backend.repositories.ScheduleForAWeekRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class ScheduleForAWeekService {
     private final ScheduleForAWeekRepository scheduleForAWeekRepository;
+    private final GameRepository gameRepository;
 
     /**
      * Метод для получения списка всех расписаний по дням недели
@@ -45,8 +49,13 @@ public class ScheduleForAWeekService {
      * @return расписание по дням недели с заданным id или null
      */
     public ScheduleForAWeek getScheduleForAWeekById(Long id) {
-        log.info("IN getScheduleForAWeekById - found schedule for a week with id: {}", id);
-        return scheduleForAWeekRepository.findById(id).orElseThrow(null);
+        ScheduleForAWeek result = scheduleForAWeekRepository.findById(id).orElseThrow(null);
+        if (result == null) {
+            log.warn("IN getScheduleForAWeekById - no schedule for a week by id: {}", id);
+            return null;
+        }
+        log.info("IN getScheduleForAWeekById - found schedule for a week: {} with id: {}",result, id);
+        return result;
     }
 
     /**
@@ -56,12 +65,13 @@ public class ScheduleForAWeekService {
      * @return расписание по дням недели с заданным email пользователя или null
      */
     public List<ScheduleForAWeek> getScheduleForAWeekByUserId(Long userId) {
-        try {
-            log.info("IN getScheduleForAWeekByUserId - found schedule for a week with userId: {}", userId);
-            return scheduleForAWeekRepository.findScheduleForAWeekByUserId(userId);
-        } catch (IllegalArgumentException e) {
-            throw new MyIllegalArgumentException(e.getMessage());
+        List<ScheduleForAWeek> result = scheduleForAWeekRepository.findScheduleForAWeekByUserId(userId).orElseThrow(null);
+        if (result.isEmpty()) {
+            log.warn("IN getScheduleForAWeekByUserId - no schedule for a week by userId: {}", userId);
+            return null;
         }
+        log.info("IN getScheduleForAWeekByUserId - found schedule for a week: {} with id: {}",result, userId);
+        return result;
     }
 
     /**
@@ -97,6 +107,26 @@ public class ScheduleForAWeekService {
             throw new MyIllegalArgumentException(e.getMessage());
         }
     }
+    /**
+     * Метод для получения игры из недельного расписания на переданный в параметрах день
+     *
+     * @param dayOfWeek
+     * @param userId
+     * @return game
+     */
+    public Optional<Game> getGameForToday(DayOfWeek dayOfWeek, Long userId) {
+        try {
+            ScheduleForAWeek scheduleForAWeeks = scheduleForAWeekRepository.findScheduleForAWeekByDayOfWeekAndUserId(dayOfWeek, userId);
+            log.info("IN getGameForToday - user with id: {} got games for dayOfWeeK: {}", userId, dayOfWeek);
+            return gameRepository.findById(scheduleForAWeeks.getGameId());
+        } catch (IllegalArgumentException e) {
+            throw new MyIllegalArgumentException(e.getMessage());
+        }
+    }
+
+
+
+
 
 
 }

@@ -6,9 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.backend.models.Game;
 import ru.gb.backend.models.User;
-import ru.gb.backend.service.GameService;
-import ru.gb.backend.service.ScheduleForAWeekService;
-import ru.gb.backend.service.impl.UserServiceImpl;
+import ru.gb.backend.services.GameService;
+import ru.gb.backend.services.UserService;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
     private final GameService gameService;
-    private final UserServiceImpl userService;
+    private final UserService userService;
     /**
      * Перехват команды на получения списка всех игр
      * @return список игр и код ответа 200
@@ -96,17 +95,11 @@ public class AdminController {
     /**
      * Перехват команды на вывод пользователя по id
      * @param id
-     * @return пользователя с заданным id и код ответа 200 либо код ответа 400 и нового пустого пользователя, если нет пользователя с заданным id
+     * @return пользователя с заданным id и код ответа 200
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
-        User userById;
-        try {
-            userById = userService.getUserById(id);
-        } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
-        }
-        return new ResponseEntity<>(userById, HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
     /**

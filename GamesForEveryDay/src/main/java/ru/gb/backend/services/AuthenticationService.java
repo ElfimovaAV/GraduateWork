@@ -1,4 +1,4 @@
-package ru.gb.backend.service;
+package ru.gb.backend.services;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +12,7 @@ import ru.gb.backend.dto.AuthenticationRequest;
 import ru.gb.backend.dto.AuthenticationResponse;
 import ru.gb.backend.dto.RegisterRequest;
 import ru.gb.backend.models.User;
-import ru.gb.backend.repository.UserRepository;
+import ru.gb.backend.repositories.UserRepository;
 
 
 @Service

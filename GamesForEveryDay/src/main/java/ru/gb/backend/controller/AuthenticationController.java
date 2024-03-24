@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.gb.backend.dto.AuthenticationRequest;
 import ru.gb.backend.dto.AuthenticationResponse;
 import ru.gb.backend.dto.RegisterRequest;
-import ru.gb.backend.service.AuthenticationService;
+import ru.gb.backend.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/api/auth")

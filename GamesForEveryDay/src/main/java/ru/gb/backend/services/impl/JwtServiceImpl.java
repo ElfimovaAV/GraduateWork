@@ -1,4 +1,4 @@
-package ru.gb.backend.service.impl;
+package ru.gb.backend.services.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.gb.backend.service.IJwtService;
+import ru.gb.backend.services.IJwtService;
 
 import javax.crypto.SecretKey;
 import java.util.Collection;

@@ -2,10 +2,7 @@ package ru.gb.backend.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.Locale;
-
-
 @Data
 @Entity
 @Table(name = "games")
@@ -26,11 +23,9 @@ public class Game {
     private int ageTo;
     @Column(nullable = false)
     private String rules;
-
     @Override
     public String toString() {
         return String.format(Locale.getDefault(), "title: %s",
                 title);
     }
-
 }
