@@ -1,4 +1,4 @@
-package ru.gb.backend.controller;
+package ru.gb.backend.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import ru.gb.backend.models.ScheduleForAWeek;
 import ru.gb.backend.models.User;
 import ru.gb.backend.services.GameService;
 import ru.gb.backend.services.ScheduleForAWeekService;
-import ru.gb.backend.services.impl.JwtServiceImpl;
+import ru.gb.backend.services.JwtServiceImpl;
 import ru.gb.backend.services.UserService;
 
 import java.util.*;
@@ -43,8 +43,10 @@ public class UserController {
      * @return отредактированного пользователя и код ответа 200
      */
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(HttpServletRequest request, @RequestBody User user) {
-        return new ResponseEntity<>(userService.updateUser(getUserByToken(request).getId(), user), HttpStatus.OK);
+    public ResponseEntity<User> updateUser(HttpServletRequest request,
+                                           @RequestBody User user) {
+        return new ResponseEntity<>(userService.updateUser(getUserByToken(request).getId(),
+                user), HttpStatus.OK);
     }
 
     /**
@@ -54,7 +56,8 @@ public class UserController {
      */
     @GetMapping("/search_by_child_sex")
     public ResponseEntity<List<Game>> getGamesByChildSex(HttpServletRequest request) {
-        return new ResponseEntity<>(gameService.getGamesByChildSex(getUserByToken(request).getId()), HttpStatus.OK);
+        return new ResponseEntity<>(gameService.getGamesByChildSex(getUserByToken(request)
+                .getId()), HttpStatus.OK);
     }
 
     /**
@@ -64,7 +67,8 @@ public class UserController {
      */
     @GetMapping("/search_by_child_age")
     public ResponseEntity<List<Game>> getGamesByChildAge(HttpServletRequest request) {
-        return new ResponseEntity<>(gameService.getGamesByChildAge(getUserByToken(request).getId()), HttpStatus.OK);
+        return new ResponseEntity<>(gameService.getGamesByChildAge(getUserByToken(request)
+                .getId()), HttpStatus.OK);
     }
 
     /**
@@ -74,7 +78,8 @@ public class UserController {
      */
     @GetMapping("/search_by_child_sex_and_age")
     public ResponseEntity<List<Game>> getGamesByChildSexAndAge(HttpServletRequest request) {
-        return new ResponseEntity<>(gameService.getGamesByChildSexAndAge(getUserByToken(request).getId()), HttpStatus.OK);
+        return new ResponseEntity<>(gameService.getGamesByChildSexAndAge(getUserByToken(request)
+                .getId()), HttpStatus.OK);
     }
 
     /**
@@ -84,7 +89,8 @@ public class UserController {
      */
     @PostMapping("/schedule_for_a_week")
     public ResponseEntity<List<ScheduleForAWeek>> createScheduleForAWeek(HttpServletRequest request){
-        return new ResponseEntity<>(gameService.createScheduleForAWeek(getUserByToken(request).getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(gameService.createScheduleForAWeek(getUserByToken(request)
+                .getId()), HttpStatus.CREATED);
     }
 
     /**
@@ -95,7 +101,8 @@ public class UserController {
     @GetMapping("/schedule_for_a_week/get")
     public ResponseEntity<List<ScheduleForAWeek>> getScheduleForAWeekByUserId(HttpServletRequest request) {
         User user = getUserByToken(request);
-        List<ScheduleForAWeek> scheduleForAWeekByUserId = scheduleForAWeekService.getScheduleForAWeekByUserId(user.getId());
+        List<ScheduleForAWeek> scheduleForAWeekByUserId = scheduleForAWeekService
+                .getScheduleForAWeekByUserId(user.getId());
         return new ResponseEntity<>(scheduleForAWeekByUserId, HttpStatus.OK);
     }
 
@@ -106,8 +113,10 @@ public class UserController {
      * @return game и код ответа 200
      */
     @GetMapping("/get_game_for_today")
-    public ResponseEntity<Game> getGameForToday(HttpServletRequest request, @RequestParam DayOfWeek dayOfWeek) {
-        return new ResponseEntity<>(scheduleForAWeekService.getGameForToday(dayOfWeek, getUserByToken(request).getId()).orElse(null), HttpStatus.OK);
+    public ResponseEntity<Game> getGameForToday(HttpServletRequest request,
+                                                @RequestParam DayOfWeek dayOfWeek) {
+        return new ResponseEntity<>(scheduleForAWeekService.getGameForToday(dayOfWeek,
+                getUserByToken(request).getId()).orElse(null), HttpStatus.OK);
     }
 
     /**
@@ -117,7 +126,8 @@ public class UserController {
      */
     @DeleteMapping("/schedule_for_a_week")
     public ResponseEntity<Void> deleteScheduleForAWeekByUserId(HttpServletRequest request){
-        scheduleForAWeekService.deleteScheduleForAWeekByUserId(getUserByToken(request).getId());
+        scheduleForAWeekService.deleteScheduleForAWeekByUserId(getUserByToken(request)
+                .getId());
         return ResponseEntity.ok().build();
     }
 

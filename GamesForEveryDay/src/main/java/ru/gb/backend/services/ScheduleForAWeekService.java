@@ -30,10 +30,12 @@ public class ScheduleForAWeekService {
         List<ScheduleForAWeek> result = scheduleForAWeekRepository
                 .findScheduleForAWeekByUserId(userId).orElseThrow(null);
         if (result.isEmpty()) {
-            log.warn("IN getScheduleForAWeekByUserId - no schedule for a week by userId: {}", userId);
+            log.warn("IN getScheduleForAWeekByUserId - " +
+                    "no schedule for a week by userId: {}", userId);
             return null;
         }
-        log.info("IN getScheduleForAWeekByUserId - found schedule for a week: {} with id: {}", result, userId);
+        log.info("IN getScheduleForAWeekByUserId - " +
+                "found schedule for a week: {} with id: {}", result, userId);
         return result;
     }
 
@@ -47,9 +49,11 @@ public class ScheduleForAWeekService {
         List<ScheduleForAWeek> result = scheduleForAWeekRepository
                 .findScheduleForAWeekByUserId(userId).orElseThrow(null);
         if (result.isEmpty()) {
-            log.warn("IN deleteScheduleForAWeekByUserId - no schedule for a week by userId: {}", userId);
+            log.warn("IN deleteScheduleForAWeekByUserId - " +
+                    "no schedule for a week by userId: {}", userId);
         } else {
-            log.info("IN deleteScheduleForAWeekByUserId - deleted schedule for a week: {} with userId: {}", result, userId);
+            log.info("IN deleteScheduleForAWeekByUserId - " +
+                    "deleted schedule for a week: {} with userId: {}", result, userId);
             scheduleForAWeekRepository.deleteAllByUserId(userId);
         }
     }
@@ -68,8 +72,10 @@ public class ScheduleForAWeekService {
             log.warn("IN getGameForToday - no schedule for a week by userId: {}", userId);
             return Optional.empty();
         } else {
-            ScheduleForAWeek scheduleForAWeek = scheduleForAWeekRepository.findScheduleForAWeekByDayOfWeekAndUserId(dayOfWeek, userId);
-            log.info("IN getGameForToday - user with id: {} got games: {} for dayOfWeeK: {}", userId, gameRepository.findById(scheduleForAWeek.getGameId()).orElse(null), dayOfWeek);
+            ScheduleForAWeek scheduleForAWeek = scheduleForAWeekRepository
+                    .findScheduleForAWeekByDayOfWeekAndUserId(dayOfWeek, userId);
+            log.info("IN getGameForToday - user with id: {} got games: {} for dayOfWeeK: {}",
+                    userId, gameRepository.findById(scheduleForAWeek.getGameId()).orElse(null), dayOfWeek);
             return gameRepository.findById(scheduleForAWeek.getGameId());
         }
     }

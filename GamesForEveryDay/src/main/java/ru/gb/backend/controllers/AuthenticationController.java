@@ -1,4 +1,4 @@
-package ru.gb.backend.controller;
+package ru.gb.backend.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,8 @@ public class AuthenticationController {
      * @return token и код ответа 200
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register (@RequestBody RegisterRequest request){
+    public ResponseEntity<AuthenticationResponse> register
+    (@RequestBody RegisterRequest request){
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
@@ -35,7 +36,8 @@ public class AuthenticationController {
      * @return token и код ответа 200
      */
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody AuthenticationRequest request){
+    public ResponseEntity<AuthenticationResponse> authenticate
+    (@RequestBody AuthenticationRequest request){
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }

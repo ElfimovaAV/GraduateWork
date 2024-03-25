@@ -1,4 +1,4 @@
-package ru.gb.backend.controller;
+package ru.gb.backend.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,8 @@ public class AdminController {
      */
     @GetMapping("/games")
     public ResponseEntity<List<Game>> getAllGames() {
-        return new ResponseEntity<>(gameService.getAllGames(), HttpStatus.OK);
+        return new ResponseEntity<>(gameService.getAllGames(),
+                HttpStatus.OK);
     }
 
     /**
@@ -33,7 +34,8 @@ public class AdminController {
      */
     @PostMapping("/games")
     public ResponseEntity<Game> createGame(@RequestBody Game game) {
-        return new ResponseEntity<>(gameService.createGame(game), HttpStatus.CREATED);
+        return new ResponseEntity<>(gameService.createGame(game),
+                HttpStatus.CREATED);
     }
 
     /**
@@ -47,7 +49,8 @@ public class AdminController {
         try {
             gameById = gameService.getGameById(id);
         } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Game());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Game());
         }
         return new ResponseEntity<>(gameById, HttpStatus.OK);
     }
@@ -59,8 +62,10 @@ public class AdminController {
      * @return отредактированную игру и код ответа 200
      */
     @PutMapping("/games/update/{id}")
-    public ResponseEntity<Game> updateGame(@PathVariable("id") Long id, @RequestBody Game game) {
-        return new ResponseEntity<>(gameService.updateGame(id, game), HttpStatus.OK);
+    public ResponseEntity<Game> updateGame(@PathVariable("id") Long id,
+                                           @RequestBody Game game) {
+        return new ResponseEntity<>(gameService.updateGame(id, game),
+                HttpStatus.OK);
     }
 
     /**
@@ -80,7 +85,8 @@ public class AdminController {
      */
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUsers(),
+                HttpStatus.OK);
     }
 
     /**
@@ -90,7 +96,8 @@ public class AdminController {
      */
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.createUser(user),
+                HttpStatus.CREATED);
     }
     /**
      * Перехват команды на вывод пользователя по id
@@ -99,7 +106,8 @@ public class AdminController {
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserById(id),
+                HttpStatus.OK);
     }
 
     /**
@@ -109,8 +117,10 @@ public class AdminController {
      * @return отредактированного пользователя и код ответа 200
      */
     @PutMapping("/users/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-        return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id,
+                                           @RequestBody User user) {
+        return new ResponseEntity<>(userService.updateUser(id, user),
+                HttpStatus.OK);
     }
 
     /**

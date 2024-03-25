@@ -3,8 +3,6 @@ package ru.gb.backend.dto;
 import lombok.*;
 import ru.gb.backend.models.Role;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor

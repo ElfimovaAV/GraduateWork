@@ -1,5 +1,4 @@
-package ru.gb.backend.config;
-
+package ru.gb.backend.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +13,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.gb.backend.repositories.UserRepository;
-
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
     @Autowired
     private UserRepository userRepository;
-
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("username not found"));
+        return username -> userRepository.findByUsername(username).orElseThrow(()->
+                new UsernameNotFoundException("username not found"));
     }
-
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
     }
-
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider= new DaoAuthenticationProvider();
